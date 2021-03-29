@@ -1,0 +1,118 @@
+https://viblo.asia/p/api-authentication-su-dung-jwt-trong-laravel-1VgZvxRY5Aw
+________
+Composer:
+"tymon/jwt-auth": "0.5.*"
+
+Providers
+Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+
+Aliases
+
+'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+ 'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+
+php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+
+php artisan jwt:secret
+php artisan key:generate
+
+php artisan make:middleware VerifyJWTToken
+____________________________________
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+
+class VerifyJWTToken
+{
+    /**
+     * Handle an incoming request.
+     * Lọc request và validate JWT token
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        try {
+            $user = JWTAuth::toUser($request->input('token'));
+        }catch (JWTException $e) {
+            if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+                return response()->json(['token_expired'], $e->getStatusCode());
+            }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+                return response()->json(['token_invalid'], $e->getStatusCode());
+            }else{
+                return response()->json(['error'=>'Token is required']);
+            }
+        }
+        return $next($request);
+    }
+}
+____________________________________
+
+trong Kernel.php
+
+$routeMiddleware = [
+...
+'jwt.auth' => \App\Http\Middleware\VerifyJWTToken::class,
+]
+
+
+
+php artisan make:controller UserController
+____________________________________
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class UserController extends Controller
+{   
+    private $user;
+
+    public function __construct(User $user){
+        $this->user = $user;
+    }
+
+    public function register(Request $request){
+        $user = $this->user->create([
+          'name' => $request->get('name'),
+          'email' => $request->get('email'),
+          'password' => Hash::make($request->get('password'))
+        ]);
+        
+        return response()->json([
+            'status'=> 200,
+            'message'=> 'User created successfully',
+            'data'=>$user
+        ]);
+    }
+
+    public function login(Request $request){
+        $credentials = $request->only('email', 'password');
+        $token = null;
+        try {
+           if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['invalid_email_or_password'], 422);
+           }
+        } catch (JWTAuthException $e) {
+            return response()->json(['failed_to_create_token'], 500);
+        }
+        return response()->json(compact('token'));
+    }
+
+    public function getUserInfo(Request $request){
+        $user = JWTAuth::toUser($request->token);
+        return response()->json(['result' => $user]);
+    }
+}
+____________________________________

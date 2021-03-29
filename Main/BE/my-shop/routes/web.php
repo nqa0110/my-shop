@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+// Route::group(['middleware' => ['jwt.Authcustomer', 'language', 'log.route'], 'prefix' => 'customer'], function () {
+//     Route::get('/{customerId}/free_answer', [FreeAnswerController::class, 'getFreeAnswerList']);
+
+//     Route::put('/{customerId}/free_answer', [FreeAnswerController::class, 'updateFreeAnswerList']);
+
+//     Route::get('/{customerId}/free_answer/{free_answerId}', [FreeAnswerController::class, 'getFreeAnswer']);
+//     ;
+
+//     Route::post('/{customerId}/free_answer', [FreeAnswerController::class, 'createFreeAnswer']);
+
+//     Route::put('/{customerId}/free_answer/{free_answerId}', [FreeAnswerController::class, 'updateFreeAnswer']);
+
+//     Route::delete('/{customerId}/free_answer/{free_answerId}', [FreeAnswerController::class, 'deleteFreeAnswer']);
+// });
+
+
+
