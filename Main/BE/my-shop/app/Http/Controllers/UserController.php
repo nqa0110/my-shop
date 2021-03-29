@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 use JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {   
@@ -48,5 +48,26 @@ class UserController extends Controller
     public function getUserInfo(Request $request){
         $user = JWTAuth::toUser($request->token);
         return response()->json(['result' => $user]);
+    }
+
+    public function logout(Request $request)
+    {
+        $token = $request->header('Authorization');
+        try {
+            JWTAuth::parseToken()->invalidate($token);
+            return response()->json(['message' => 'logged out']);;
+        } catch (TokenExpiredException $exception) {
+            return response()->json([
+                'message' => "Expired Token"
+            ], 401);
+        } catch (TokenInvalidException $exception) {
+            return response()->json([
+                'message' => "Invalid Token"
+            ], 401);
+        } catch (JWTException $exception) {
+            return response()->json([
+                'message' => "JWT Error"
+            ], 500);
+        }
     }
 }  

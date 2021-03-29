@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,19 @@ use App\Http\Controllers\UserController;
 
 Route::post('auth/register', [UserController::class, 'register']);
 Route::post('auth/login',[UserController::class, 'login']);
+// Admin auth
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('user-info',[UserController::class, 'getUserInfo']);
+    Route::post('logout',[UserController::class, 'logout']);
+});
+
+Route::group(['prefix' => 'LoginCustomer'], function () {
+    Route::post('register', [CustomerController::class, 'register']);
+    Route::post('login', [CustomerController::class, 'login']);
+    Route::post('get', [CustomerController::class, 'customer']);
+});
+
+// Customer auth
+Route::group(['middleware' => ['jwt.Authcustomer']], function () {
+    Route::get('customer-info', [CustomerController::class, 'customer']);
 });
