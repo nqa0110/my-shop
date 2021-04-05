@@ -9,7 +9,7 @@ use App\Models\User;
 use JWTAuth;
 
 class UserController extends Controller
-{   
+{
     private $user;
 
     public function __construct(User $user){
@@ -19,12 +19,12 @@ class UserController extends Controller
     public function register(Request $request){
         $user = $this->user->create([
           'first_name' => $request->get('first_name'),
-          'last_name' => $request->get('first_name'),
-          'address' => $request->get('first_name'),
+          'last_name' => $request->get('last_name'),
+          'address' => $request->get('address'),
           'email' => $request->get('email'),
           'password' => bcrypt($request->get('password'))
         ]);
-        
+
         return response()->json([
             'status'=> 200,
             'message'=> 'User created successfully',
@@ -70,4 +70,4 @@ class UserController extends Controller
             ], 500);
         }
     }
-}  
+}

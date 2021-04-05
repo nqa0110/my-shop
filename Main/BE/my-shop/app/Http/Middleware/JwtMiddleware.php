@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Middleware;
+
 use JWTAuth;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 use Closure;
 use Tymon\JWTAuth\Exceptions\JWTException;
+
 class JwtMiddleware extends BaseMiddleware
 {
     /**

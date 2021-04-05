@@ -41,13 +41,13 @@ class CustomerController extends Controller
     {
         $customer = $this->customer->create([
           'first_name' => $request->get('first_name'),
-          'last_name' => $request->get('first_name'),
+          'last_name' => $request->get('last_name'),
           'address' => $request->get('address'),
           'email' => $request->get('email'),
           'email_verified_at' => $request->get('email_verified_at'),
           'password' => bcrypt($request->get('password'))
         ]);
-        
+
         return response()->json([
             'status'=> 200,
             'message'=> 'Customer created successfully',
@@ -59,19 +59,43 @@ class CustomerController extends Controller
     {
         $input = $request->only('email', 'password');
         $token = null;
-        if (!$token = JWTAuth::attempt($input)) {
-            return response()->json(['message' => 'Wrong email or password'], 422);
+        try {
+            if (!$token = JWTAuth::attempt($input)) {
+                return response()->json(['invalid_email_or_password'], 422);
+            }
+        } catch (JWTAuthException $e) {
+            return response()->json(['failed_to_create_token'], 500);
         }
-        return response()
-            ->json(['status' => true, 'message' => 'Logged in successfully', 'token' => $token]);
+        return response()->json(compact('token'));
     }
 
-    public function customer(Request $request)
+    public function getCustomerInfo (Request $request)
     {
         $customer = JWTAuth::toUser($request->token);
         if ($customer) {
             return response($customer, Response::HTTP_OK);
         }
         return response(null, Response::HTTP_BAD_REQUEST);
+    }
+
+    public function logout(Request $request)
+    {
+        $token = $request->header('Authorization');
+        try {
+            JWTAuth::parseToken()->invalidate($token);
+            return response()->json(['message' => 'logged out']);;
+        } catch (TokenExpiredException $exception) {
+            return response()->json([
+                'message' => "Expired Token"
+            ], 401);
+        } catch (TokenInvalidException $exception) {
+            return response()->json([
+                'message' => "Invalid Token"
+            ], 401);
+        } catch (JWTException $exception) {
+            return response()->json([
+                'message' => "JWT Error"
+            ], 500);
+        }
     }
 }
