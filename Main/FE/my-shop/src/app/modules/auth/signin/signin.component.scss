@@ -1,0 +1,26 @@
+.login-modal {
+    position: absolute;
+    background-color: beige;
+    height: 400px;
+    width: 400px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.btn-cancel {
+    position: absolute;
+    top: -8px;
+    right: 0;
+    transform: translateY(-50%);
+    transform: translateX(50%);
+    border-radius: 50%;
+    &:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+}
+
+.lb {
+    line-height: 38px;
+    font-size: 16px;
+}
