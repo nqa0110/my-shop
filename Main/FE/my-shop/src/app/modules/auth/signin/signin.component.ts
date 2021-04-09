@@ -22,7 +22,7 @@ export class SigninComponent implements OnInit {
       (res) => {
         console.log(res);
         localStorage.setItem('token', res.token);
-        this._router.navigate(['/class']);
+        this._router.navigate(['/admin/home']);
       },
       (err) => console.log(err)
     );
