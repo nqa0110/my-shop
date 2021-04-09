@@ -5,9 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // form
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; // call api, INTERCEPTORS
-import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth.guard'; // check login
-import { TokenInterceptorService } from './services/token-interceptor.service';
+import { RequestInterceptor } from './services/request.interceptor';
 
 @NgModule({
   declarations: [
@@ -21,11 +20,11 @@ import { TokenInterceptorService } from './services/token-interceptor.service';
     HttpClientModule, // call api
   ],
   providers: [
-    AuthService, AuthGuard,{
+    {
       provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptorService,
-      multi: true
-    }
+      useClass: RequestInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

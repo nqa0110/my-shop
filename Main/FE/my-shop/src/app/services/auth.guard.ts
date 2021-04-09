@@ -1,18 +1,23 @@
+import { UserService } from './user.service';
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from './auth.service';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(private _authService: AuthService, private _router: Router) {}
-  canActivate():boolean{
-    if (this._authService.loggedIn()){
-      return true;
-    }
-    else{
-      this._router.navigate(['/signin']);
+  constructor(private userService: UserService, private router: Router) {}
+  canActivate(): boolean {
+    if (this.userService.isAuthenticated()) return true;
+    else {
+      this.router.navigateByUrl(''); // change base login url
       return false;
     }
   }

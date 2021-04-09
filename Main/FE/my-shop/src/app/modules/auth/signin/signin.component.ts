@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from 'src/app/services/user.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from './../../../services/auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -8,23 +9,39 @@ import { AuthService } from './../../../services/auth.service';
   styleUrls: ['./signin.component.scss']
 })
 export class SigninComponent implements OnInit {
-  loginUserData = {
-    email: '',
-    password: '',
-  };
-  constructor(private _auth: AuthService, private _router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService, //
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.createForm();
   }
 
-  onSignIn() {
-    this._auth.loginUser(this.loginUserData).subscribe(
-      (res) => {
-        console.log(res);
-        localStorage.setItem('token', res.token);
-        this._router.navigate(['/admin/home']);
+  loginForm: FormGroup;
+  createForm() {
+    this.loginForm = this.fb.group({
+      username: '',
+      password: '',
+    });
+  }
+
+  success: boolean = false;
+  onLogin() {
+    let userInfor = {
+      email: this.loginForm.value.username,
+      password: this.loginForm.value.password,
+    };
+    this.userService.login(userInfor).subscribe(
+      (result) => {
+        localStorage.setItem('token', result.token);
+        console.log(result.token);
+        this.router.navigateByUrl('admin/home');
       },
-      (err) => console.log(err)
+      (error) => {
+        console.log(new Error('Loiiiiiiiiiiiiiiii').toString());
+      }
     );
   }
 

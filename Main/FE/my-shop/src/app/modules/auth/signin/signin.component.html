@@ -1,23 +1,23 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <form class="form login-modal form-group" action="#" method="post">
+        <form id="login-form" class="form login-modal form-group" [formGroup]="loginForm" (ngSubmit)='onLogin()' action="" method="post">
             <div class="row no-gutters justify-content-center my-5">
                 <h1 class="display-4 align-items-center">Login</h1>
             </div>
             <div class="row form-group no-gutters justify-content-center mb-4">
                 <div class="lb col-2 mr-1">Email</div>
                 <div class="col-6 offset-sm-1 ml-0">
-                    <input class="form-control" type="text" [(ngModel)]="loginUserData.email" name="email" required>
+                    <input formControlName='username' class="form-control" type="text" name="email">
                 </div>
             </div>
             <div class="row form-group no-gutters justify-content-center mb-4">
                 <div class="lb col-2 mr-1">Password</div>
                 <div class="col-6 offset-sm-1 ml-0">
-                    <input class="form-control" type="text" [(ngModel)]="loginUserData.password" name="email" required>
+                    <input formControlName='password' class="form-control" type="text" name="password">
                 </div>
             </div>
             <div class="row no-gutters justify-content-center my-3">
-                <button (click)="onSignIn()" class="col-2 mx-2 btn btn btn-primary" type="button">Sign In</button>
+                <button class="col-2 mx-2 btn btn btn-primary" type="submit">Sign In</button>
                 <a href="/admin/signup" class="col-2 mx-2 btn btn-secondary">Sign Up</a>
             </div>
             <span class="btn-cancel badge badge-secondary">X</span>
