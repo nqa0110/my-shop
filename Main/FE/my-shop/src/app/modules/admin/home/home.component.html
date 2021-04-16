@@ -1,4 +1,15 @@
-<!-- <app-header></app-header>
+<!-- header -->
+<app-header></app-header>
 
-<app-sidebar></app-sidebar> -->
-<p>home</p>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <app-sidebar></app-sidebar>
+        </nav>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <router-outlet></router-outlet>
+            <!-- <router-outlet name="route1"></router-outlet> -->
+            <!-- <router-outlet name="route2"></router-outlet> -->
+        </main>
+    </div>
+</div>

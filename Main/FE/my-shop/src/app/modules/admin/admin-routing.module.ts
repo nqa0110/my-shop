@@ -9,6 +9,11 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
+    children: [
+      { path: '', component: ExerciseComponent },
+      { path: 'exercise1', component: ExerciseComponent, outlet: 'route1' },
+      { path: 'exercise2', component: ExerciseComponent, outlet: 'route2' },
+    ],
     canActivate: [AuthGuard],
   },
   {
